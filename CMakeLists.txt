@@ -204,6 +204,10 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
     target_compile_definitions(${Target} PUBLIC "OS_POSIX")
 endif()
 
+# architecture defines
+target_compile_definitions(${Target} PUBLIC CPU_WORD_BYTES=${CMAKE_SIZEOF_VOID_P})
+
+
 if(BUILD_DOC)
     # doxygen documentation (https://vicrucann.github.io/tutorials/quick-cmake-doxygen/)
     # check if Doxygen is installed
