@@ -8,8 +8,8 @@ project(CMAKE_Template_Project LANGUAGES CXX VERSION 0.0.1)
 
 # settings
 set(Target "Template_Project")    # Executable name (without file extension!)
-set(STANDARD 20)             # C++ Standard
-
+set(STANDARD 20)                  # C++ Standard
+set(ARCHITECTURE "native")        # CPU architecture to optimize for (only relevant if OPTIMIZE_FOR_ARCHITECTURE is ON)
 
 # options
 option(BUILD_DOC "Build documentation" ON)
@@ -20,6 +20,9 @@ option(OPENMP "enable openmp" ON)
 option(OPTIMIZE_DEBUG "apply optimizations also in debug mode" ON)
 option(CLANG_FORMAT "use clang-format" ON)
 option(CLANG_TIDY "use clang-tidy" OFF)
+option(OPTIMIZE_FOR_ARCHITECTURE "enable optimizations for specified architecture" ON)
+option(LTO_ENABLED "enable interprocedural and link time optimizations" ON)
+
 
 
 # ======================================================================================================================
@@ -60,13 +63,18 @@ function(commonopts)
     endif()
 
     if(MAKE_32_BIT_BINARY)
-        message("Compiling as 32 bit binary.")
+        message(STATUS "Compiling as 32 bit binary.")
         target_compile_options(${Target} PUBLIC -m32)
     endif()
 
     if(ENABLE_MULTITHREADING AND OPENMP)
-        message("openmp enabled")
+        message(STATUS "openmp enabled")
         target_compile_options(${Target} PUBLIC -fopenmp)
+    endif()
+
+    if(OPTIMIZE_FOR_ARCHITECTURE)
+        message(STATUS "using architecture specific code generator: ${ARCHITECTURE}")
+        target_compile_options(${Target} PUBLIC -march=${ARCHITECTURE})
     endif()
 endfunction()
 
@@ -130,12 +138,12 @@ function(clangwarn)
 endfunction()
 
 if(COMPILER_WARNINGS)
-    message("Compiler warnings enabled.")
+    message(STATUS "Compiler warnings enabled.")
 else()
-    message("Compiler warnings disabled.")
+    message(STATUS "Compiler warnings disabled.")
 endif()
 
-# gcc settings
+# compiler settings
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     # compiler specific defines
     target_compile_definitions(${Target} PUBLIC "COMPILER_GNU")
@@ -186,6 +194,18 @@ if(ENABLE_MULTITHREADING)
     target_link_libraries(${Target} PRIVATE Threads::Threads)
 endif()
 
+# lto
+if(LTO_ENABLED)
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT ipo_supported OUTPUT error)
+    if( ipo_supported )
+        message(STATUS "IPO / LTO enabled")
+        set_property(TARGET ${Target} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+    else()
+        message(STATUS "IPO / LTO not supported: <${error}>")
+    endif()
+endif()
+
 # os dependent defines
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     target_compile_definitions(${Target} PUBLIC "OS_LINUX")
@@ -219,7 +239,7 @@ if(BUILD_DOC)
 
         # request to configure the file
         configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
-        message("Doxygen build started")
+        message(STATUS "Doxygen build started")
 
         # note the option ALL which allows to build the docs together with the application
         add_custom_target( doc_doxygen ALL
@@ -228,7 +248,7 @@ if(BUILD_DOC)
             COMMENT "Generating API documentation with Doxygen"
             VERBATIM )
     else (DOXYGEN_FOUND)
-      message("Doxygen need to be installed and accessible to generate the doxygen documentation.")
+      message(WARNING "Doxygen need to be installed and accessible to generate the doxygen documentation.")
     endif (DOXYGEN_FOUND)
 endif()
 
