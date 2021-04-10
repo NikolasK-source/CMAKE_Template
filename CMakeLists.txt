@@ -22,6 +22,7 @@ option(CLANG_FORMAT "use clang-format" ON)
 option(CLANG_TIDY "use clang-tidy" OFF)
 option(OPTIMIZE_FOR_ARCHITECTURE "enable optimizations for specified architecture" ON)
 option(LTO_ENABLED "enable interprocedural and link time optimizations" ON)
+option(COMPILER_EXTENSIONS "enable compiler specific C++ extensions" OFF)
 
 
 
@@ -32,6 +33,7 @@ option(LTO_ENABLED "enable interprocedural and link time optimizations" ON)
 # ----------------------------------------------- Do not change --------------------------------------------------------
 # ======================================================================================================================
 
+# TODO select useful checks
 if(CLANG_TIDY)
     set(CMAKE_CXX_CLANG_TIDY
             clang-tidy;
@@ -46,11 +48,11 @@ add_executable(${Target})
 add_subdirectory("src")
 add_subdirectory("libs")
 
-# force C++ Standard and disable compiler specific extensions
+# force C++ Standard and disable/enable compiler specific extensions
 set_target_properties(${Target} PROPERTIES
         CXX_STANDARD ${STANDARD}
         CXX_STANDARD_REQUIRED ON
-        CXX_EXTENSIONS OFF
+        CXX_EXTENSIONS ${COMPILER_EXTENSIONS}
     )
 
 # options that are valid for gcc and clang
@@ -80,6 +82,8 @@ endfunction()
 
 # warnings that are valid for gcc and clang
 function(commonwarn)
+    target_compile_options(${Target} PUBLIC -Wall -Wextra -Werror -pedantic -pedantic-errors)
+
     # see https://gcc.gnu.org/onlinedocs/gcc-4.3.2/gcc/Warning-Options.html for more details
 
     target_compile_options(${Target} PUBLIC -Wnull-dereference)
@@ -147,12 +151,12 @@ endif()
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     # compiler specific defines
     target_compile_definitions(${Target} PUBLIC "COMPILER_GNU")
+    target_compile_definitions(${Target} PUBLIC "COMPILER_GNU_CLANG")
 
     commonopts()
 
     # enable warnings
     if(COMPILER_WARNINGS)
-        target_compile_options(${Target} PUBLIC -Wall -Wextra -Werror -pedantic -pedantic-errors)
         commonwarn()
         gccwarn()
     else()
@@ -161,12 +165,12 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # compiler specific defines
     target_compile_definitions(${Target} PUBLIC "COMPILER_CLANG")
+    target_compile_definitions(${Target} PUBLIC "COMPILER_GNU_CLANG")
 
     commonopts()
 
     # enable warnings (general)
     if(COMPILER_WARNINGS)
-        target_compile_options(${Target} PUBLIC -Wall -Wextra -Werror -pedantic -pedantic-errors)
         commonwarn()
         clangwarn()
     else()
@@ -181,14 +185,21 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     SET(CMAKE_CXX_FLAGS_DEBUG "/Zi")  
     message(AUTHOR_WARNING
             "You are using the MSVC compiler! Only gcc/clang are fully supported by this template.")
-    target_compile_options(${Target} PUBLIC /Wall /WX /OpenMP)
+
+    if(COMPILER_WARNINGS)
+        target_compile_options(${Target} PUBLIC /Wall /WX)
+    endif()
+
+    if(ENABLE_MULTITHREADING AND OPENMP)
+        target_compile_options(${Target} PUBLIC /OpenMP)
+    endif()
 else()
     message(AUTHOR_WARNING
             "You are using a compiler other than gcc/clang. Only gcc/clang are fully supported by this template.")
 endif()
 
 if(ENABLE_MULTITHREADING)
-    # threading lib (std::thread)
+    # required by threading lib (std::thread)
     set(THREADS_PREFER_PTHREAD_FLAG ON)
     find_package(Threads REQUIRED)
     target_link_libraries(${Target} PRIVATE Threads::Threads)
@@ -217,7 +228,6 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
     target_compile_definitions(${Target} PUBLIC "OS_WINDOWS")
     # TODO check options
     target_compile_options(${Target} PUBLIC -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd)
-    # TODO disable DEBUG in release mode
     SET(CMAKE_CXX_FLAGS_DEBUG "-g3 -D_DEBUG")
 elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
     target_compile_definitions(${Target} PUBLIC "OS_DARWIN")
@@ -237,22 +247,35 @@ if(BUILD_DOC)
         set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
         set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
-        # request to configure the file
-        configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
-        message(STATUS "Doxygen build started")
+        if(EXISTS ${DOXYGEN_IN})
+            # request to configure the file
+            configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+            message(STATUS "Doxygen configured")
 
-        # note the option ALL which allows to build the docs together with the application
-        add_custom_target( doc_doxygen ALL
-            COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-            COMMENT "Generating API documentation with Doxygen"
-            VERBATIM )
+            # note the option ALL which allows to build the docs together with the application
+            add_custom_target( doc_doxygen ALL
+                COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                COMMENT "Generating API documentation with Doxygen"
+                VERBATIM )
+            message(STATUS "Added target doc_doxygen")
+        else()
+            message(WARNING "doxygen documentation requested, but file ${DOXYGEN_IN} does not exist.")
+        endif()
     else (DOXYGEN_FOUND)
       message(WARNING "Doxygen need to be installed and accessible to generate the doxygen documentation.")
     endif (DOXYGEN_FOUND)
 endif()
 
+# add clang format target
 if(CLANG_FORMAT)
-    include(ClangFormat.cmake)
-    target_clangformat_setup(${Target})
+    set(CLANG_FORMAT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/.clang-format)
+
+    if(EXISTS ${CLANG_FORMAT_FILE})
+        include(ClangFormat.cmake)
+        target_clangformat_setup(${Target})
+        message(STATUS "Added clang format target(s)")
+    else()
+        message(WARNING "Clang format enabled, but file ${CLANG_FORMAT_FILE}  does not exist")
+    endif()
 endif()
