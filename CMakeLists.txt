@@ -55,8 +55,9 @@ set_target_properties(${Target} PROPERTIES
         CXX_EXTENSIONS ${COMPILER_EXTENSIONS}
     )
 
-# project version
+# project version and name
 target_compile_definitions(${Target} PUBLIC "PROJECT_VERSION=\"${CMAKE_PROJECT_VERSION}\"")
+target_compile_definitions(${Target} PUBLIC "PROJECT_NAME=\"${CMAKE_PROJECT_NAME}\"")
 
 # options that are valid for gcc and clang
 function(commonopts)
