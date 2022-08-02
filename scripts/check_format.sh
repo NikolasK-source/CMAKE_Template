@@ -1,3 +1,8 @@
+#
+# Copyright (C) 2020-2022 Nikolas Koesling <nikolas@koesling.info>.
+# This program is free software. You can redistribute it and/or modify it under the terms of the MIT License.
+#
+
 #!/bin/bash
 
 # https://stackoverflow.com/questions/4774054/reliable-way-for-a-bash-script-to-get-the-full-path-to-itself/4774063
