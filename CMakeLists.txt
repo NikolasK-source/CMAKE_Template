@@ -48,6 +48,7 @@ endif()
 
 # add executable
 add_executable(${Target})
+install(TARGETS ${Target})
 
 # set source and libraries directory
 add_subdirectory("src")
@@ -60,9 +61,12 @@ set_target_properties(${Target} PROPERTIES
         CXX_EXTENSIONS ${COMPILER_EXTENSIONS}
     )
 
-# project version and name
+# compiler definitions
 target_compile_definitions(${Target} PUBLIC "PROJECT_VERSION=\"${CMAKE_PROJECT_VERSION}\"")
 target_compile_definitions(${Target} PUBLIC "PROJECT_NAME=\"${CMAKE_PROJECT_NAME}\"")
+target_compile_definitions(${Target} PUBLIC "COMPILER_INFO=\"${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}\"")
+target_compile_definitions(${Target} PUBLIC "SYSTEM_INFO=\"${CMAKE_SYSTEM_NAME} ${CMAKE_SYSTEM_VERSION} ${CMAKE_HOST_SYSTEM_PROCESSOR}\"")
+
 
 # options that are valid for gcc and clang
 function(commonopts)
@@ -184,7 +188,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         clangwarn()
     else()
         target_compile_options(${Target} PUBLIC -w)
-    endif()
+endif()
 
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     # compiler specific defines
