@@ -4,7 +4,10 @@
  */
 
 #include <iostream>
-#include <omp.h>
+
+#ifdef _OPENMP
+#    include <omp.h>
+#endif
 
 int main() {
     // TODO implement

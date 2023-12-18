@@ -21,7 +21,7 @@ option(BUILD_DOC "Build documentation" ON)
 option(COMPILER_WARNINGS "Enable compiler warnings" ON)
 option(ENABLE_MULTITHREADING "Link the default multithreading library for the current target system" ON)
 option(MAKE_32_BIT_BINARY "Compile as 32 bit application. No effect on 32 bit Systems" OFF)
-option(OPENMP "enable openmp" ON)
+option(OPENMP "enable openmp" OFF)
 option(OPTIMIZE_DEBUG "apply optimizations also in debug mode" ON)
 option(CLANG_FORMAT "use clang-format" ON)
 option(CLANG_TIDY "use clang-tidy" ON)
@@ -40,10 +40,14 @@ option(ENABLE_TEST "enable test builds" ON)
 
 # TODO select useful checks
 if(CLANG_TIDY)
-    set(CMAKE_CXX_CLANG_TIDY
-            clang-tidy
-            -config-file=${CMAKE_SOURCE_DIR}/.clang-tidy)
-    message(STATUS "clang-tidy enabled: ${CMAKE_SOURCE_DIR}/.clang-tidy")
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        set(CMAKE_CXX_CLANG_TIDY
+                clang-tidy
+                -config-file=${CMAKE_SOURCE_DIR}/.clang-tidy)
+        message(STATUS "clang-tidy enabled: ${CMAKE_SOURCE_DIR}/.clang-tidy")
+    else()
+        message(WARNING "clang-tidy requested, but only available if clang is selected as compiler")
+    endif()
 endif()
 
 # add executable

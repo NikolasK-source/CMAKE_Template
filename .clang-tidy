@@ -55,5 +55,6 @@ Checks:          'bugprone-*,
 WarningsAsErrors: '*,
                   -modernize-*,
                   -readability-*
-                  -cppcoreguidelines-avoid-magic-numbers'
+                  -cppcoreguidelines-avoid-magic-numbers,
+                  -cppcoreguidelines-pro-type-vararg'
 HeaderFilterRegex: ''
