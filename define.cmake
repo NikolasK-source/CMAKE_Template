@@ -25,6 +25,9 @@ function(set_definitions target)
 
     # project
     target_compile_definitions(${target} PUBLIC "PROJECT_VERSION=\"${CMAKE_PROJECT_VERSION}\"")
+    target_compile_definitions(${target} PUBLIC "PROJECT_VERSION_MAJOR=${CMAKE_PROJECT_VERSION_MAJOR}")
+    target_compile_definitions(${target} PUBLIC "PROJECT_VERSION_MINOR=${CMAKE_PROJECT_VERSION_MINOR}")
+    target_compile_definitions(${target} PUBLIC "PROJECT_VERSION_PATCH=${CMAKE_PROJECT_VERSION_PATCH}")
     target_compile_definitions(${target} PUBLIC "PROJECT_NAME=\"${CMAKE_PROJECT_NAME}\"")
     target_compile_definitions(${target} PUBLIC "COMPILER_INFO=\"${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}\"")
     target_compile_definitions(${target} PUBLIC "SYSTEM_INFO=\"${CMAKE_SYSTEM_NAME} ${CMAKE_SYSTEM_VERSION} ${CMAKE_HOST_SYSTEM_PROCESSOR}\"")
