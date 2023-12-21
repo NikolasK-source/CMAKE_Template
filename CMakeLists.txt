@@ -71,7 +71,11 @@ set_target_properties(${Target} PROPERTIES
 
 # compiler definitions and options
 set_definitions(${Target})
-set_options(${Target} ENABLE_MULTITHREADING AND OPENMP)
+if (ENABLE_MULTITHREADING AND OPENMP)
+    set_options(${Target} ON)
+else()
+    set_options(${Target} OFF)
+endif()
 
 if(COMPILER_WARNINGS)
     enable_warnings(${Target})
