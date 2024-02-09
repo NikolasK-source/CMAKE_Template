@@ -30,7 +30,6 @@ option(LTO_ENABLED "enable interprocedural and link time optimizations" ON)
 option(COMPILER_EXTENSIONS "enable compiler specific C++ extensions" OFF)
 option(ENABLE_TEST "enable test builds" ON)
 
-
 # ======================================================================================================================
 # ======================================================================================================================
 
@@ -38,7 +37,8 @@ option(ENABLE_TEST "enable test builds" ON)
 # ----------------------------------------------- Do not change --------------------------------------------------------
 # ======================================================================================================================
 
-# TODO select useful checks
+set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
+
 if(CLANG_TIDY)
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         set(CMAKE_CXX_CLANG_TIDY
