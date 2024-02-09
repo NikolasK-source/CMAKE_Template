@@ -3,7 +3,7 @@
 # This template is free software. You can redistribute it and/or modify it under the terms of the MIT License.
 #
 
-cmake_minimum_required(VERSION 3.13.4 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.24.0 FATAL_ERROR)
 
 # ----------------------------------------------- User settings --------------------------------------------------------
 # ======================================================================================================================
@@ -25,6 +25,7 @@ option(OPENMP "enable openmp" OFF)
 option(OPTIMIZE_DEBUG "apply optimizations also in debug mode" ON)
 option(CLANG_FORMAT "use clang-format" ON)
 option(CLANG_TIDY "use clang-tidy" ON)
+option(CLANG_TIDY_NO_ERRORS "do not treat clang-tidy warnings as errors" ON)
 option(OPTIMIZE_FOR_ARCHITECTURE "enable optimizations for specified architecture" ON)
 option(LTO_ENABLED "enable interprocedural and link time optimizations" ON)
 option(COMPILER_EXTENSIONS "enable compiler specific C++ extensions" OFF)
@@ -41,10 +42,16 @@ set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 if(CLANG_TIDY)
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        if (${CLANG_TIDY_NO_ERRORS}) 
+            set (CLANG_TIDY_CONFIG_FILE ${CMAKE_SOURCE_DIR}/.clang-tidy-noerrors)
+        else()
+            set (CLANG_TIDY_CONFIG_FILE ${CMAKE_SOURCE_DIR}/.clang-tidy)
+        endif()
+
         set(CMAKE_CXX_CLANG_TIDY
                 clang-tidy
-                -config-file=${CMAKE_SOURCE_DIR}/.clang-tidy)
-        message(STATUS "clang-tidy enabled: ${CMAKE_SOURCE_DIR}/.clang-tidy")
+                -config-file=${CLANG_TIDY_CONFIG_FILE})
+        message(STATUS "clang-tidy enabled: ${CLANG_TIDY_CONFIG_FILE}")
     else()
         message(WARNING "clang-tidy requested, but only available if clang is selected as compiler")
     endif()
