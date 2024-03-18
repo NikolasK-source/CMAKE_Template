@@ -170,9 +170,11 @@ add_custom_command(
 
     WORKING_DIRECTORY
         ${CMAKE_SOURCE_DIR}
+)
 
-    DEPENDS
-
+execute_process(
+    COMMAND bash "${CMAKE_SOURCE_DIR}/scripts/gen_version_info_cpp.sh"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 add_custom_target(${Target}_generated_version_info
