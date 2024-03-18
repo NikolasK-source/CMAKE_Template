@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2020-2022 Nikolas Koesling <nikolas@koesling.info>.
+# Copyright (C) 2020-2024 Nikolas Koesling <nikolas@koesling.info>.
 # This template is free software. You can redistribute it and/or modify it under the terms of the MIT License.
 #
 
@@ -126,17 +126,23 @@ if(BUILD_DOC)
             message(STATUS "Doxygen configured")
 
             # note the option ALL which allows to build the docs together with the application
-            add_custom_target( doc_doxygen ALL
+            add_custom_target( doc_doxygen_${Target} ALL
                 COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 COMMENT "Generating API documentation with Doxygen"
                 VERBATIM )
-            message(STATUS "Added target doc_doxygen")
+            message(STATUS "Added target doc_doxygen_${Target}")
+
+            if(TARGET doc_doxygen)
+                add_dependencies(doc_doxygen doc_doxygen_${Target})
+            else()
+                add_custom_target(doc_doxygen DEPENDS doc_doxygen_${Target})
+            endif()
         else()
             message(WARNING "doxygen documentation requested, but file ${DOXYGEN_IN} does not exist.")
         endif()
     else (DOXYGEN_FOUND)
-      message(WARNING "Doxygen need to be installed and accessible to generate the doxygen documentation.")
+        message(WARNING "Doxygen must be installed and accessible to generate the doxygen documentation.")
     endif (DOXYGEN_FOUND)
 endif()
 
