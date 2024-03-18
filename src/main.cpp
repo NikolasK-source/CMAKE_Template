@@ -13,8 +13,17 @@
 
 int main() {
     // TODO implement
-    std::cout << version_info::NAME << ' ' << version_info::VERSION_STR << ' ' << "Hello CMake!!!\n";
-    std::cout << "git commit: " << version_info::GIT_HASH << '\n';
+    std::cout << "PROJECT_VERSION: " << PROJECT_VERSION << '\n';
+    std::cout << "PROJECT_VERSION_MAJOR: " << PROJECT_VERSION_MAJOR << '\n';
+    std::cout << "PROJECT_VERSION_MINOR: " << PROJECT_VERSION_MINOR << '\n';
+    std::cout << "PROJECT_VERSION_PATCH: " << PROJECT_VERSION_PATCH << '\n';
+    std::cout << "PROJECT_NAME: " << PROJECT_NAME << '\n';
+    std::cout << "COMPILER_INFO: " << COMPILER_INFO << '\n';
+    std::cout << "SYSTEM_INFO: " << SYSTEM_INFO << '\n';
+    std::cout << "CPU_WORD_BYTES: " << CPU_WORD_BYTES << '\n';
+    std::cout << CMAKE_Template_Project_version_info::NAME << ' ' << CMAKE_Template_Project_version_info::VERSION_STR
+              << ' ' << "Hello CMake!!!\n";
+    std::cout << "git commit: " << CMAKE_Template_Project_version_info::GIT_HASH << '\n';
 
 #ifdef _OPENMP
 #    pragma omp parallel default(none)

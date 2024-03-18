@@ -172,7 +172,7 @@ add_custom_command(
         ${CMAKE_SOURCE_DIR}/src/generated/version_info_cpp
 
     COMMAND
-        bash ${CMAKE_SOURCE_DIR}/scripts/gen_version_info_cpp.sh
+        bash ${CMAKE_SOURCE_DIR}/scripts/gen_version_info_cpp.sh ${PROJECT_NAME}
 
     WORKING_DIRECTORY
         ${CMAKE_SOURCE_DIR}
