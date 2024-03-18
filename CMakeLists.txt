@@ -179,7 +179,7 @@ add_custom_command(
 )
 
 execute_process(
-    COMMAND bash "${CMAKE_SOURCE_DIR}/scripts/gen_version_info_cpp.sh"
+    COMMAND bash "${CMAKE_SOURCE_DIR}/scripts/gen_version_info_cpp.sh" ${PROJECT_NAME}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
