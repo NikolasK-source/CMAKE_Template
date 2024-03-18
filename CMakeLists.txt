@@ -158,3 +158,27 @@ if(ENABLE_TEST)
     enable_testing()
     add_subdirectory("test")
 endif()
+
+# generate version_info.cpp
+# output is not the acutal generated file --> command is always executed
+add_custom_command(
+    OUTPUT
+        ${CMAKE_SOURCE_DIR}/src/generated/version_info_cpp
+
+    COMMAND
+        bash ${CMAKE_SOURCE_DIR}/scripts/gen_version_info_cpp.sh
+
+    WORKING_DIRECTORY
+        ${CMAKE_SOURCE_DIR}
+)
+
+execute_process(
+    COMMAND bash "${CMAKE_SOURCE_DIR}/scripts/gen_version_info_cpp.sh"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_custom_target(${Target}_generated_version_info
+    DEPENDS ${CMAKE_SOURCE_DIR}/src/generated/version_info_cpp
+)
+
+add_dependencies(${Target} ${Target}_generated_version_info)

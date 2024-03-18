@@ -3,6 +3,8 @@
  * This program is free software. You can redistribute it and/or modify it under the terms of the MIT License.
  */
 
+#include "generated/version_info.hpp"
+
 #include <iostream>
 
 #ifdef _OPENMP
@@ -11,7 +13,8 @@
 
 int main() {
     // TODO implement
-    std::cout << PROJECT_NAME << ' ' << PROJECT_VERSION << ' ' << "Hello CMake!!!" << std::endl;
+    std::cout << version_info::NAME << ' ' << version_info::VERSION_STR << ' ' << "Hello CMake!!!" << std::endl;
+    std::cout << "git commit: " << version_info::GIT_HASH << std::endl;
 
 #ifdef _OPENMP
 #    pragma omp parallel default(none)
