@@ -13,7 +13,10 @@ This repository is a template for CMake C++ Projects.
 Use this directory for all source files of the project.
 
 ### Directory libs
-Place libraries here. This Directory is added to the include path.
+Place libraries here. This directory is added to the include path.
+
+### Directory test
+Place any test-related sources here.
 
 ## Scripts
 
@@ -23,6 +26,10 @@ This script checks all ```*.cpp``` and ```*.hpp``` files for conformity with the
 ### format.sh
 This script formats all ```*.cpp``` and ```*.hpp``` files in the src directory with clang format.
 The files are changed by it!
+
+### gen_version_info_cpp.sh
+This script generates version information files.
+It is called automatically when the target is built.
 
 ## Options
 
@@ -36,8 +43,6 @@ The minimum required C++ standard: 98, 03, 11, 14, 17, 20
 The CPU architecture for which the code is generated.
 It is only relevant if the option ```OPTIMIZE_FOR_ARCHITECTURE``` is enabled.
 
-```native``` should be the best choice in most cases.
-
 ### BUILD_DOC
 Enables the automatic generation of a doxygen documentation.
 Doxygen must be installed on the system and a ```Doxyfile.in``` file must be provided.
@@ -45,6 +50,7 @@ An additional CMake target is created.
 
 ### COMPILER_WARNINGS
 Enable/Disable compiler warnings.
+Should never be disabled by default!
 
 ### ENABLE_MULTITHREADING
 Link the default multithreading library for the current target system.
@@ -68,8 +74,6 @@ An additional CMake target is created.
 Enable static code checks with clang tidy.
 An additional CMake target is created.
 
-Not usable in this version due to contradictory warnings.
-
 ### LTO_ENABLED
 Enable interprocedural and link time optimizations.
 
@@ -77,4 +81,6 @@ Enable interprocedural and link time optimizations.
 Enable compiler specific C++ extensions.
 Should be disabled for reasons of portability.
 
+### ENABLE_TEST
+Enable tests.
 
