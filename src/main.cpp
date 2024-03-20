@@ -21,6 +21,7 @@ int main() {
     std::cout << "COMPILER_INFO: " << COMPILER_INFO << '\n';
     std::cout << "SYSTEM_INFO: " << SYSTEM_INFO << '\n';
     std::cout << "CPU_WORD_BYTES: " << CPU_WORD_BYTES << '\n';
+    std::cout << "GIT_HASH: " << RCS_HASH << '\n';
     std::cout << CMAKE_Template_Project_version_info::NAME << ' ' << CMAKE_Template_Project_version_info::VERSION_STR
               << ' ' << "Hello CMake!!!\n";
     std::cout << "git commit: " << CMAKE_Template_Project_version_info::GIT_HASH << '\n';
