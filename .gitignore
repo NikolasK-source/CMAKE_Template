@@ -1,6 +1,7 @@
 # general
 build*
 docs/
+docs_doxy
 
 # editor files
 
