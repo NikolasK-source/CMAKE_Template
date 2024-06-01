@@ -132,11 +132,14 @@ if(ENABLE_TEST)
     add_subdirectory("test")
 endif()
 
-# generate version_info.cpp
-# output is not the acutal generated file --> command is always executed
+# generate version_info.{c,h}pp
 add_custom_command(
     OUTPUT
         ${CMAKE_SOURCE_DIR}/src/generated/version_info_cpp
+
+    BYPRODUCTS
+        ${CMAKE_SOURCE_DIR}/src/generated/version_info.cpp
+        ${CMAKE_SOURCE_DIR}/src/generated/version_info.hpp
 
     COMMAND
         bash ${CMAKE_SOURCE_DIR}/scripts/gen_version_info_cpp.sh ${PROJECT_NAME}
