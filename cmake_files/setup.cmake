@@ -6,20 +6,16 @@
 set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 if(CLANG_TIDY)
-    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        if (${CLANG_TIDY_NO_ERRORS}) 
-            set (CLANG_TIDY_CONFIG_FILE ${CMAKE_SOURCE_DIR}/.clang-tidy-noerrors)
-        else()
-            set (CLANG_TIDY_CONFIG_FILE ${CMAKE_SOURCE_DIR}/.clang-tidy)
-        endif()
-
-        set(CMAKE_CXX_CLANG_TIDY
-                clang-tidy
-                -config-file=${CLANG_TIDY_CONFIG_FILE})
-        message(STATUS "clang-tidy enabled: ${CLANG_TIDY_CONFIG_FILE}")
+    if (${CLANG_TIDY_NO_ERRORS}) 
+        set (CLANG_TIDY_CONFIG_FILE ${CMAKE_SOURCE_DIR}/.clang-tidy-noerrors)
     else()
-        message(WARNING "clang-tidy requested, but only available if clang is selected as compiler")
+        set (CLANG_TIDY_CONFIG_FILE ${CMAKE_SOURCE_DIR}/.clang-tidy)
     endif()
+
+    set(CMAKE_CXX_CLANG_TIDY
+            clang-tidy
+            -config-file=${CLANG_TIDY_CONFIG_FILE})
+    message(STATUS "clang-tidy enabled: ${CLANG_TIDY_CONFIG_FILE}")
 endif()
 
 # add executable
