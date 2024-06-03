@@ -5,7 +5,7 @@
 
 set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
-if(CLANG_TIDY)
+if(CLANG_TIDY AND COMPILER_WARNINGS)
     if (${CLANG_TIDY_NO_ERRORS}) 
         set (CLANG_TIDY_CONFIG_FILE ${CMAKE_SOURCE_DIR}/.clang-tidy-noerrors)
     else()
