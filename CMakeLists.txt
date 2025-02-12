@@ -11,6 +11,9 @@ cmake_minimum_required(VERSION 3.24.0 FATAL_ERROR)
 # project
 project(CMAKE_Template_Project LANGUAGES CXX VERSION 0.0.1)
 
+# short project description
+set(PROJECT_BRIEF "An empty CMAKE project as template for new projects")
+
 # settings
 set(Target "Template_Project")    # Executable name (without file extension!)
 set(STANDARD 20)                  # C++ Standard
@@ -24,12 +27,15 @@ option(MAKE_32_BIT_BINARY "Compile as 32 bit application. No effect on 32 bit Sy
 option(OPENMP "enable openmp" OFF)
 option(OPTIMIZE_DEBUG "apply optimizations also in debug mode" ON)
 option(CLANG_FORMAT "use clang-format" ON)
-option(CLANG_TIDY "use clang-tidy" ON)
+option(CLANG_TIDY "use clang-tidy" OFF)
 option(CLANG_TIDY_NO_ERRORS "do not treat clang-tidy warnings as errors" ON)
 option(OPTIMIZE_FOR_ARCHITECTURE "enable optimizations for specified architecture" OFF)
 option(LTO_ENABLED "enable interprocedural and link time optimizations" ON)
 option(COMPILER_EXTENSIONS "enable compiler specific C++ extensions" OFF)
 option(ENABLE_TEST "enable test builds" ON)
+option(WERROR "warnings as errors" ON)
+option(INSTALL_TARGET "install target" ON)
+option(FORCE_CLANG_FORMAT "run clang format before target build" ON)
 
 # ======================================================================================================================
 # ======================================================================================================================
